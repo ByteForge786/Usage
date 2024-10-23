@@ -17,24 +17,26 @@ def load_custom_css():
             color: #0f172a;
             font-size: 1.8em;
             font-weight: 600;
-            text-align: center;
-            padding: 24px 0;
-            margin-bottom: 30px;
+            text-align: left;
+            padding: 24px 40px;
+            margin-bottom: 20px;
             background: linear-gradient(to right, #ffffff, #f1f5f9);
             border-bottom: 1px solid #e2e8f0;
+            font-family: system-ui, -apple-system, sans-serif;
         }
 
         /* Chat message containers */
         .chat-container {
             margin: 20px auto;
-            max-width: 900px;
-            padding: 0 20px;
+            max-width: 1000px;
+            padding: 0 40px;
         }
 
         .message-group {
-            max-width: 80%;
-            margin: 16px 0;
+            max-width: 75%;
+            margin: 24px 0;
             clear: both;
+            position: relative;
         }
 
         .user-container {
@@ -47,27 +49,29 @@ def load_custom_css():
 
         /* Message bubbles */
         .message-bubble {
-            padding: 14px 20px;
+            padding: 16px 20px;
             border-radius: 12px;
-            margin: 5px 0;
+            margin: 4px 0;
             display: inline-block;
             max-width: 100%;
             word-wrap: break-word;
             font-size: 0.95em;
             line-height: 1.5;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            font-family: system-ui, -apple-system, sans-serif;
         }
 
         .user-message {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, #1e40af, #1e3a8a);
             color: white;
             border-top-right-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .assistant-message {
             background: white;
             color: #1e293b;
             border-top-left-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             border: 1px solid #e2e8f0;
         }
 
@@ -75,7 +79,7 @@ def load_custom_css():
         .timestamp {
             font-size: 0.75em;
             color: #64748b;
-            margin: 4px 8px;
+            margin: 6px 10px;
             font-family: system-ui, -apple-system, sans-serif;
         }
 
@@ -85,54 +89,18 @@ def load_custom_css():
             padding: 20px 0;
         }
 
-        /* Input box styling */
-        .stTextInput > div > div > input {
-            border: 1px solid #e2e8f0 !important;
-            border-radius: 8px !important;
-            padding: 12px 16px !important;
-            font-size: 0.95em !important;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
-            background: white !important;
-        }
-
-        .stTextInput > div > div > input:focus {
-            border-color: #2563eb !important;
-            box-shadow: 0 0 0 2px rgba(37,99,235,0.1) !important;
-        }
-
-        /* Suggested questions styling */
-        .stButton > button {
-            background: white !important;
-            border: 1px solid #e2e8f0 !important;
-            color: #1e293b !important;
-            padding: 8px 16px !important;
-            border-radius: 8px !important;
-            font-size: 0.9em !important;
-            font-weight: 500 !important;
-            transition: all 0.2s !important;
-            width: 100% !important;
-            text-align: left !important;
-            margin: 4px 0 !important;
-        }
-
-        .stButton > button:hover {
-            background: #f8fafc !important;
-            border-color: #2563eb !important;
-            color: #2563eb !important;
-        }
-
-        /* Welcome message */
+        /* Welcome container */
         .welcome-container {
-            max-width: 700px;
+            max-width: 800px;
             margin: 40px auto;
-            padding: 24px;
+            padding: 30px;
             background: white;
             border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             border: 1px solid #e2e8f0;
         }
 
-        .welcome-title {
+        .welcome-heading {
             font-size: 1.2em;
             color: #0f172a;
             margin-bottom: 16px;
@@ -140,25 +108,100 @@ def load_custom_css():
         }
 
         .welcome-list {
+            list-style-type: none;
+            padding: 0;
             margin: 16px 0;
-            padding-left: 24px;
+        }
+
+        .welcome-list li {
+            padding: 8px 0;
             color: #334155;
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .welcome-list li:before {
+            content: "•";
+            color: #2563eb;
+            position: absolute;
+            left: 8px;
+        }
+
+        /* Custom styling for suggested questions buttons */
+        .stButton button {
+            background-color: white !important;
+            color: #1e293b !important;
+            margin: 6px 0 !important;
+            padding: 12px 20px !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            width: 100% !important;
+            text-align: left !important;
+            font-size: 0.95em !important;
+            font-weight: 500 !important;
+            transition: all 0.2s ease !important;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+        }
+
+        .stButton button:hover {
+            background-color: #f8fafc !important;
+            border-color: #2563eb !important;
+            color: #2563eb !important;
+        }
+
+        /* Input styling */
+        .stChatInput {
+            max-width: 800px;
+            margin: 0 auto;
+            padding-bottom: 40px;
+        }
+
+        .stChatInput > div {
+            padding: 0 20px;
+        }
+
+        .stChatInput input {
+            border: 1px solid #e2e8f0 !important;
+            padding: 12px 20px !important;
+            border-radius: 8px !important;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+            font-size: 0.95em !important;
+        }
+
+        .stChatInput input:focus {
+            border-color: #2563eb !important;
+            box-shadow: 0 0 0 2px rgba(37,99,235,0.1) !important;
+        }
+
+        /* Code block styling */
+        .message-bubble pre {
+            background: #f8fafc;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #e2e8f0;
+            overflow-x: auto;
+        }
+
+        .message-bubble code {
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #1e293b;
+        }
+
+        /* Role labels */
+        .role-label {
+            font-weight: 500;
+            color: #64748b;
         }
         </style>
     """, unsafe_allow_html=True)
 
-suggested_questions = {
-    "How can I analyze Snowflake usage?": "Based on my analysis, you can monitor Snowflake usage through several key methods:\n\n1. Query History Analysis:\n- Use `SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY`\n- Monitor execution times and patterns\n- Track resource consumption\n\n2. Warehouse Metrics:\n- Check `WAREHOUSE_METERING_HISTORY`\n- Monitor credit usage\n- Analyze peak usage times",
-    "What are the most expensive queries?": "To identify expensive queries, focus on:\n\n1. Execution Time:\n- Long-running queries\n- High compilation time\n\n2. Resource Usage:\n- Large data scans\n- Heavy compute operations\n\nUse this query:\n```sql\nSELECT query_text, execution_time, credits_used\nFROM query_history\nORDER BY credits_used DESC\nLIMIT 10;```",
-    "How to optimize compute costs?": "Here are proven strategies to reduce Snowflake compute costs:\n\n1. Warehouse Management:\n- Auto-suspend unused warehouses\n- Right-size warehouse capacity\n\n2. Query Optimization:\n- Use clustering keys\n- Implement proper filtering\n- Avoid SELECT *",
-    "Show recent query patterns": "I'll help you analyze recent query patterns. Here's a query for that:\n```sql\nSELECT \n  date_trunc('hour', start_time) as query_hour,\n  count(*) as query_count,\n  avg(execution_time)/1000 as avg_execution_seconds\nFROM query_history\nWHERE start_time >= dateadd('day', -7, current_timestamp())\nGROUP BY 1\nORDER BY 1 DESC;```"
-}
-
-def get_unified_response(input_text):
-    """Unified response handler for both user inputs and suggested questions"""
-    if input_text in suggested_questions:
-        return suggested_questions[input_text]
-    return f"Let me help you with that query: {input_text}\n\nBased on the Snowflake documentation and best practices, here's what I found..."
+def get_response(user_input):
+    """Generate response for user input"""
+    if user_input in suggested_questions:
+        return suggested_questions[user_input]
+    return f"Let me help you with that query: {user_input}\n\nBased on the Snowflake documentation and best practices, here's what I found..."
 
 def display_message(is_user, message, timestamp):
     """Display a single message with enhanced styling"""
@@ -172,7 +215,7 @@ def display_message(is_user, message, timestamp):
                 {message}
             </div>
             <div class="timestamp">
-                {role} • {timestamp}
+                <span class="role-label">{role}</span> • {timestamp}
             </div>
         </div>
     """, unsafe_allow_html=True)
@@ -189,8 +232,8 @@ def display_suggested_questions():
     """Display suggested questions as clickable buttons"""
     st.markdown("""
         <div class="welcome-container">
-            <div class="welcome-title">Welcome to Snowflake Analysis Assistant</div>
-            <p>I can help you optimize and analyze your Snowflake implementation with:</p>
+            <div class="welcome-heading">Welcome to Snowflake Analysis Assistant</div>
+            <p>I specialize in helping you optimize and analyze your Snowflake implementation.</p>
             <ul class="welcome-list">
                 <li>Query optimization</li>
                 <li>Cost analysis</li>
@@ -203,14 +246,20 @@ def display_suggested_questions():
     
     with st.container():
         for question in suggested_questions.keys():
-            if st.button(question):
-                response = get_unified_response(question)
-                st.session_state.chat_history.append({
-                    "user_input": question,
-                    "response": response,
-                    "timestamp": datetime.now().strftime("%I:%M %p")
-                })
-                st.rerun()
+            # Remove emojis from button text
+            clean_question = ' '.join(question.split()[:-1])  # Remove the last word (emoji)
+            if st.button(clean_question):
+                handle_suggested_question(question)
+
+def handle_suggested_question(question):
+    """Handle suggested question selection"""
+    response = suggested_questions[question]
+    st.session_state.chat_history.append({
+        "user_input": question,
+        "response": response,
+        "timestamp": datetime.now().strftime("%I:%M %p")
+    })
+    st.rerun()
 
 def main():
     st.set_page_config(
@@ -234,7 +283,7 @@ def main():
     # Chat input
     user_input = st.chat_input("Ask me anything about Snowflake...")
     if user_input:
-        response = get_unified_response(user_input)
+        response = get_response(user_input)
         st.session_state.chat_history.append({
             "user_input": user_input,
             "response": response,
