@@ -74,6 +74,7 @@ def load_custom_css():
             margin: 5px 0;  /* Reduced margin */
             border: 1px solid #1976d2; /* Blue border */
             cursor: pointer;
+            text-align: center;  /* Center the text */
         }
 
         .suggested-question:hover {
