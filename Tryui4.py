@@ -153,31 +153,12 @@ def display_chat():
         display_message(False, chat['response'], chat['timestamp'])
     st.markdown('</div>', unsafe_allow_html=True)
 
-def display_suggested_questions_in_message():
-    """Display suggested questions as a message by the assistant"""
-    st.markdown("""
-        <div class="message-group assistant-container">
-            <div class="message-bubble assistant-message">
-                💡 Here are some suggested questions you can ask:
-                <ul>
-                    <li>How can I analyze Snowflake usage? 📊</li>
-                    <li>What are the most expensive queries? 💰</li>
-                    <li>How to optimize compute costs? 📉</li>
-                    <li>Show recent query patterns 📋</li>
-                </ul>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-
 def display_suggested_questions():
-    """Display suggested questions as buttons"""
-    st.markdown('<div class="suggested-questions">', unsafe_allow_html=True)
-    st.markdown("#### 💡 Suggested Questions")
-    cols = st.columns(2)
+    """Display suggested questions directly in the chat interface"""
+    st.markdown("#### 💡 Suggested Questions:")
     for idx, question in enumerate(suggested_questions.keys()):
-        with cols[idx % 2]:
-            if st.button(question, key=f"suggest_{idx}"):
-                handle_suggested_question(question)
+        if st.button(question, key=f"suggest_{idx}"):
+            handle_suggested_question(question)
 
 def handle_suggested_question(question):
     """Handle suggested question selection"""
@@ -217,12 +198,12 @@ def main():
                 </div>
             </div>
         """, unsafe_allow_html=True)
-        display_suggested_questions_in_message()
-    
-    display_suggested_questions()
     
     if st.session_state.chat_history:
         display_chat()
+    
+    # Display suggested questions within the chat interface
+    display_suggested_questions()
     
     # Chat input
     user_input = st.chat_input("💬 Ask me anything about Snowflake...")
