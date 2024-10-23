@@ -24,36 +24,38 @@ def get_response(user_input):
     # Otherwise, provide a custom response
     return f"Here's a response to your query: {user_input}"
 
-def add_to_chat_history(user_input, response):
-    """Add a new conversation to chat history"""
+def handle_suggested_question(question):
+    """Handle when a suggested question is clicked"""
+    response = suggested_questions[question]
     st.session_state.chat_history.append({
-        "user_input": user_input,
+        "user_input": question,
         "response": response,
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     })
 
 def display_chat():
     """Display chat history with proper formatting"""
-    if st.session_state.chat_history:
-        st.markdown("### Chat History")
-        for chat in st.session_state.chat_history:
-            with st.container():
-                st.markdown(f"**You** ({chat['timestamp']}):")
-                st.markdown(chat['user_input'])
-                st.markdown("**Assistant**:")
-                st.markdown(chat['response'])
-                st.markdown("---")
+    for chat in st.session_state.chat_history:
+        with st.container():
+            st.markdown(f"**You** ({chat['timestamp']}):")
+            st.markdown(chat['user_input'])
+            st.markdown("**Assistant**:")
+            st.markdown(chat['response'])
+            st.markdown("---")
 
 def display_suggested_questions():
     """Display suggested questions as buttons"""
     st.markdown("#### Suggested questions:")
-    cols = st.columns(2)  # Create two columns for better layout
-    
-    for idx, (question, response) in enumerate(suggested_questions.items()):
-        with cols[idx % 2]:
-            if st.button(question, key=f"suggest_{idx}"):
-                add_to_chat_history(question, response)
-                st.rerun()  # Rerun the app to update the chat history
+    # Create a container for suggested questions
+    with st.container():
+        cols = st.columns(2)  # Create two columns for better layout
+        for idx, question in enumerate(suggested_questions.keys()):
+            with cols[idx % 2]:
+                # Create a unique key for each button
+                button_key = f"suggest_button_{idx}"
+                if st.button(question, key=button_key):
+                    handle_suggested_question(question)
+                    st.rerun()
 
 def main():
     st.set_page_config(page_title="Snowflake Assistant", layout="wide")
@@ -62,23 +64,29 @@ def main():
     # Initialize session state
     init_session_state()
     
-    # Show welcome message and suggested questions only on first visit
-    if st.session_state.is_first_visit:
-        st.markdown("### Welcome! 👋 I'm here to help you analyze Snowflake usage.")
-        st.session_state.is_first_visit = False
-        display_suggested_questions()
+    # Show welcome message always
+    st.markdown("### Welcome! 👋 I'm here to help you analyze Snowflake usage.")
     
-    # Display chat history
-    display_chat()
+    # Always show suggested questions at the top
+    display_suggested_questions()
     
-    # User chat input
+    # Show chat history if it exists
+    if st.session_state.chat_history:
+        st.markdown("### Chat History")
+        display_chat()
+    
+    # User chat input at the bottom
     user_input = st.chat_input("Ask me a question about Snowflake...")
     
     # Handle user input
     if user_input:
         response = get_response(user_input)
-        add_to_chat_history(user_input, response)
-        st.rerun()  # Rerun to update the chat history
+        st.session_state.chat_history.append({
+            "user_input": user_input,
+            "response": response,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        })
+        st.rerun()
 
 if __name__ == "__main__":
     main()
