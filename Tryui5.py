@@ -126,21 +126,20 @@ def display_chat():
     st.markdown('</div>', unsafe_allow_html=True)
 
 def display_suggested_questions():
-    """Display suggested questions as messages from assistant"""
+    """Display suggested questions as clickable buttons"""
     st.markdown('<div class="chat-messages">', unsafe_allow_html=True)
     st.markdown("""
         <div class="message-group assistant-container">
             <div class="message-bubble assistant-message">
                 🤖 Here are some suggested questions to get started:
-                <ul>
-                    <li>How can I analyze Snowflake usage? 📊</li>
-                    <li>What are the most expensive queries? 💰</li>
-                    <li>How to optimize compute costs? 📉</li>
-                    <li>Show recent query patterns 📋</li>
-                </ul>
             </div>
         </div>
     """, unsafe_allow_html=True)
+    
+    for question in suggested_questions.keys():
+        if st.button(question):
+            handle_suggested_question(question)
+    
     st.markdown('</div>', unsafe_allow_html=True)
 
 def handle_suggested_question(question):
