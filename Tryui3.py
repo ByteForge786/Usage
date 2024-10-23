@@ -1,12 +1,9 @@
 import streamlit as st
 from datetime import datetime
-import time
 
 def init_session_state():
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
-    if "is_typing" not in st.session_state:
-        st.session_state.is_typing = False
 
 def load_custom_css():
     st.markdown("""
@@ -76,17 +73,6 @@ def load_custom_css():
         }
 
         /* Icons and metadata */
-        .message-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: inline-block;
-            margin: 0 8px;
-            text-align: center;
-            line-height: 28px;
-            font-size: 14px;
-        }
-
         .timestamp {
             font-size: 0.7em;
             color: #6b7280;
@@ -111,6 +97,8 @@ def load_custom_css():
             font-size: 0.9em;
             transition: all 0.2s ease;
             margin: 5px 0;
+            width: 100%;
+            text-align: left;
         }
 
         .stButton button:hover {
@@ -119,57 +107,9 @@ def load_custom_css():
             transform: translateY(-1px);
         }
 
-        /* Typing indicator */
-        .typing-indicator {
-            background-color: white;
-            padding: 10px 15px;
-            border-radius: 20px;
-            display: inline-block;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            margin: 10px 0;
-        }
-
-        .dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #90caf9;
-            animation: wave 1.3s linear infinite;
-            margin-right: 3px;
-        }
-
-        .dot:nth-child(2) { animation-delay: -1.1s; }
-        .dot:nth-child(3) { animation-delay: -0.9s; }
-
-        @keyframes wave {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-4px); }
-        }
-
-        /* Divider styling */
-        .section-divider {
-            text-align: center;
-            color: #6b7280;
-            font-size: 0.9em;
-            margin: 20px 0;
-        }
-
-        /* Chat input container */
-        .chat-input-container {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            padding: 20px;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-        }
-
-        /* Scrollable chat container */
+        /* Chat messages container */
         .chat-messages {
-            max-height: calc(100vh - 400px);
-            overflow-y: auto;
+            margin-bottom: 100px;
             padding: 20px 0;
         }
         </style>
@@ -182,13 +122,8 @@ suggested_questions = {
     "Show recent query patterns 📋": "I'll help you analyze recent query patterns. Here's a query for that:\n```sql\nSELECT \n  date_trunc('hour', start_time) as query_hour,\n  count(*) as query_count,\n  avg(execution_time)/1000 as avg_execution_seconds\nFROM query_history\nWHERE start_time >= dateadd('day', -7, current_timestamp())\nGROUP BY 1\nORDER BY 1 DESC;```"
 }
 
-def simulate_typing():
-    """Simulate typing effect"""
-    st.session_state.is_typing = True
-    st.rerun()
-
 def get_response(user_input):
-    """Generate response with typing simulation"""
+    """Generate response for user input"""
     if user_input in suggested_questions:
         return suggested_questions[user_input]
     return f"Let me help you with that query: {user_input}\n\nBased on the Snowflake documentation and best practices, here's what I found..."
@@ -210,31 +145,16 @@ def display_message(is_user, message, timestamp):
         </div>
     """, unsafe_allow_html=True)
 
-def display_typing_indicator():
-    """Display typing indicator"""
-    st.markdown("""
-        <div class="message-group assistant-container">
-            <div class="typing-indicator">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-
 def display_chat():
-    """Display chat history with enhanced styling"""
+    """Display chat history"""
     st.markdown('<div class="chat-messages">', unsafe_allow_html=True)
     for chat in st.session_state.chat_history:
         display_message(True, chat['user_input'], chat['timestamp'])
         display_message(False, chat['response'], chat['timestamp'])
-    
-    if st.session_state.is_typing:
-        display_typing_indicator()
     st.markdown('</div>', unsafe_allow_html=True)
 
 def display_suggested_questions():
-    """Display suggested questions with enhanced styling"""
+    """Display suggested questions"""
     st.markdown('<div class="suggested-questions">', unsafe_allow_html=True)
     st.markdown("#### 💡 Suggested Questions")
     cols = st.columns(2)
@@ -242,20 +162,16 @@ def display_suggested_questions():
         with cols[idx % 2]:
             if st.button(question, key=f"suggest_{idx}"):
                 handle_suggested_question(question)
-                st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
 
 def handle_suggested_question(question):
-    """Handle suggested question selection with typing simulation"""
-    simulate_typing()
-    time.sleep(1)  # Simulate brief typing delay
+    """Handle suggested question selection"""
     response = suggested_questions[question]
     st.session_state.chat_history.append({
         "user_input": question,
         "response": response,
         "timestamp": datetime.now().strftime("%I:%M %p")
     })
-    st.session_state.is_typing = False
+    st.rerun()
 
 def main():
     st.set_page_config(
@@ -291,21 +207,16 @@ def main():
     if st.session_state.chat_history:
         display_chat()
     
-    # Chat input at the bottom
-    with st.container():
-        st.markdown('<div style="height: 80px;"></div>', unsafe_allow_html=True)  # Spacer
-        user_input = st.chat_input("💬 Ask me anything about Snowflake...")
-        if user_input:
-            simulate_typing()
-            time.sleep(1)  # Simulate brief typing delay
-            response = get_response(user_input)
-            st.session_state.chat_history.append({
-                "user_input": user_input,
-                "response": response,
-                "timestamp": datetime.now().strftime("%I:%M %p")
-            })
-            st.session_state.is_typing = False
-            st.rerun()
+    # Chat input
+    user_input = st.chat_input("💬 Ask me anything about Snowflake...")
+    if user_input:
+        response = get_response(user_input)
+        st.session_state.chat_history.append({
+            "user_input": user_input,
+            "response": response,
+            "timestamp": datetime.now().strftime("%I:%M %p")
+        })
+        st.rerun()
 
 if __name__ == "__main__":
     main()
