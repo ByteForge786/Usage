@@ -74,20 +74,22 @@ def load_custom_css():
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        /* Suggestion links styling */
-        .suggestion-link {
-            color: #1976d2;
-            text-decoration: none;
-            cursor: pointer;
-            display: block;
-            margin: 8px 0;
-            padding: 8px 12px;
-            border-radius: 8px;
+        /* Suggestion button styling */
+        .suggestion-button {
             background: #e3f2fd;
+            border: none;
+            color: #1976d2;
+            padding: 8px 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            display: block;
+            width: 100%;
             transition: all 0.2s ease;
         }
 
-        .suggestion-link:hover {
+        .suggestion-button:hover {
             background: #bbdefb;
             transform: translateX(2px);
         }
@@ -138,15 +140,29 @@ def display_message(is_user, message, timestamp):
     """, unsafe_allow_html=True)
 
 def display_suggestions():
-    """Display suggested questions as clickable chat messages"""
-    suggestions_html = '<div class="message-group assistant-container"><div class="message-bubble assistant-message">'
-    suggestions_html += "Here are some questions you might find helpful:<br><br>"
+    """Display suggested questions as chat messages with streamlit buttons"""
+    st.markdown(
+        '<div class="message-group assistant-container">'
+        '<div class="message-bubble assistant-message">'
+        'Here are some questions you might find helpful:<br><br>'
+        '</div>'
+        '<div class="timestamp">🤖 Just now</div>'
+        '</div>',
+        unsafe_allow_html=True
+    )
     
-    for question in suggested_questions.keys():
-        suggestions_html += f'<a class="suggestion-link" onclick="parent.postMessage({{question: \'{question}\'}}, \'*\')">{question}</a>'
-    
-    suggestions_html += '</div><div class="timestamp">🤖 Just now</div></div>'
-    st.markdown(suggestions_html, unsafe_allow_html=True)
+    # Create a container for the suggestions
+    with st.container():
+        for question in suggested_questions.keys():
+            if st.button(question, key=f"suggest_{question}", use_container_width=True):
+                timestamp = datetime.now().strftime("%I:%M %p")
+                response = suggested_questions[question]
+                st.session_state.chat_history.append({
+                    "user_input": question,
+                    "response": response,
+                    "timestamp": timestamp
+                })
+                st.rerun()
 
 def display_chat():
     """Display chat history"""
@@ -191,22 +207,6 @@ def main():
     
     if st.session_state.chat_history:
         display_chat()
-    
-    # Add JavaScript to handle suggestion clicks
-    st.markdown("""
-        <script>
-        window.addEventListener('message', function(e) {
-            if (e.data.question) {
-                const input = window.parent.document.querySelector('.stChatInput input');
-                if (input) {
-                    input.value = e.data.question;
-                    input.dispatchEvent(new Event('input', { bubbles: true }));
-                    input.form.requestSubmit();
-                }
-            }
-        });
-        </script>
-    """, unsafe_allow_html=True)
     
     # Chat input
     user_input = st.chat_input("💬 Ask me anything about Snowflake...")
