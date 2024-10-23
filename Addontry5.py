@@ -5,14 +5,14 @@ def load_custom_css():
         .stApp {
             background-color: #f5f7fb !important;
         }
-        
+
         .main-title {
             color: #1976d2;
             font-size: 2.2em;
             font-weight: 600;
             text-align: center;
             padding: 20px 0;
-            margin-bottom: 20px;  /* Reduced margin */
+            margin-bottom: 0;  /* Removed margin */
             background: white;
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
@@ -67,17 +67,17 @@ def load_custom_css():
 
         /* Suggested questions styles */
         .suggested-question {
-            background-color: #e3f2fd;  /* Light blue background */
-            color: #1e88e5;  /* Darker blue text */
+            background-color: #2196F3;  /* Bright blue background */
+            color: white;  /* White text */
             border-radius: 5px;
             padding: 10px;
             margin: 5px 0;  /* Reduced margin */
-            border: 1px solid #90caf9; /* Light border */
+            border: 1px solid #1976d2; /* Blue border */
             cursor: pointer;
         }
 
         .suggested-question:hover {
-            background-color: #bbdefb;  /* Slightly darker on hover */
+            background-color: #1e88e5;  /* Darker blue on hover */
         }
 
         /* Icons and metadata */
