@@ -74,6 +74,24 @@ def load_custom_css():
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
+        /* Suggestion links styling */
+        .suggestion-link {
+            color: #1976d2;
+            text-decoration: none;
+            cursor: pointer;
+            display: block;
+            margin: 8px 0;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: #e3f2fd;
+            transition: all 0.2s ease;
+        }
+
+        .suggestion-link:hover {
+            background: #bbdefb;
+            transform: translateX(2px);
+        }
+
         /* Icons and metadata */
         .timestamp {
             font-size: 0.7em;
@@ -85,26 +103,6 @@ def load_custom_css():
         .chat-messages {
             margin-bottom: 100px;
             padding: 20px 0;
-        }
-
-        /* Custom button styling */
-        .stButton button {
-            width: 100%;
-            text-align: left;
-            background-color: #e3f2fd;
-            border: none;
-            padding: 8px 12px;
-            margin: 4px 0;
-            border-radius: 8px;
-            color: #1976d2;
-            font-size: 1em;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .stButton button:hover {
-            background-color: #bbdefb;
-            transform: translateX(2px);
         }
         </style>
     """, unsafe_allow_html=True)
@@ -141,26 +139,14 @@ def display_message(is_user, message, timestamp):
 
 def display_suggestions():
     """Display suggested questions as clickable chat messages"""
-    st.markdown("""
-        <div class="message-group assistant-container">
-            <div class="message-bubble assistant-message">
-                Here are some questions you might find helpful:
-            </div>
-            <div class="timestamp">🤖 Just now</div>
-        </div>
-    """, unsafe_allow_html=True)
+    suggestions_html = '<div class="message-group assistant-container"><div class="message-bubble assistant-message">'
+    suggestions_html += "Here are some questions you might find helpful:<br><br>"
     
-    # Create a container for the buttons to maintain chat-like appearance
-    with st.container():
-        for question in suggested_questions.keys():
-            if st.button(question):
-                current_time = datetime.now().strftime("%I:%M %p")
-                st.session_state.chat_history.append({
-                    "user_input": question,
-                    "response": suggested_questions[question],
-                    "timestamp": current_time
-                })
-                st.rerun()
+    for question in suggested_questions.keys():
+        suggestions_html += f'<a class="suggestion-link" onclick="parent.postMessage({{question: \'{question}\'}}, \'*\')">{question}</a>'
+    
+    suggestions_html += '</div><div class="timestamp">🤖 Just now</div></div>'
+    st.markdown(suggestions_html, unsafe_allow_html=True)
 
 def display_chat():
     """Display chat history"""
@@ -205,6 +191,22 @@ def main():
     
     if st.session_state.chat_history:
         display_chat()
+    
+    # Add JavaScript to handle suggestion clicks
+    st.markdown("""
+        <script>
+        window.addEventListener('message', function(e) {
+            if (e.data.question) {
+                const input = window.parent.document.querySelector('.stChatInput input');
+                if (input) {
+                    input.value = e.data.question;
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                    input.form.requestSubmit();
+                }
+            }
+        });
+        </script>
+    """, unsafe_allow_html=True)
     
     # Chat input
     user_input = st.chat_input("💬 Ask me anything about Snowflake...")
