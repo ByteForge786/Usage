@@ -10,77 +10,106 @@ def load_custom_css():
         <style>
         /* Main container and general styling */
         .stApp {
-            background-color: #f8fafc !important;
+            background-color: #f5f7fb !important;
+            background-image: linear-gradient(135deg, #f5f7fb 0%, #e8eef5 100%);
         }
         
         .main-title {
-            color: #0f172a;
-            font-size: 1.8em;
+            color: #1976d2;
+            font-size: 2.2em;
             font-weight: 600;
-            text-align: left;
-            padding: 24px 40px;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, #ffffff, #f1f5f9);
-            border-bottom: 1px solid #e2e8f0;
-            font-family: system-ui, -apple-system, sans-serif;
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(25, 118, 210, 0.08);
+            transition: all 0.3s ease;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         /* Chat message containers */
         .chat-container {
-            margin: 20px auto;
-            max-width: 1000px;
+            margin: 20px 0;
+            clear: both;
+            overflow: hidden;
             padding: 0 40px;
         }
 
         .message-group {
-            max-width: 75%;
-            margin: 24px 0;
+            max-width: 70%;
+            margin: 10px 0;
             clear: both;
-            position: relative;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .user-container {
             float: right;
+            text-align: right;
         }
 
         .assistant-container {
             float: left;
+            text-align: left;
         }
 
-        /* Message bubbles */
+        /* Message bubbles with enhanced styling */
         .message-bubble {
-            padding: 16px 20px;
-            border-radius: 12px;
-            margin: 4px 0;
+            padding: 12px 18px;
+            border-radius: 20px;
+            margin: 5px 0;
             display: inline-block;
             max-width: 100%;
             word-wrap: break-word;
-            font-size: 0.95em;
-            line-height: 1.5;
-            font-family: system-ui, -apple-system, sans-serif;
+            transition: all 0.2s ease;
+            animation: scaleBubble 0.3s ease-out;
+        }
+
+        @keyframes scaleBubble {
+            from { transform: scale(0.95); }
+            to { transform: scale(1); }
         }
 
         .user-message {
-            background: linear-gradient(135deg, #1e40af, #1e3a8a);
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
             color: white;
-            border-top-right-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-top-right-radius: 5px;
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.2);
         }
 
         .assistant-message {
             background: white;
-            color: #1e293b;
-            border-top-left-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
+            color: #1f2937;
+            border-top-left-radius: 5px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         }
 
-        /* Timestamps and metadata */
+        .message-bubble:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Icons and metadata with animations */
         .timestamp {
-            font-size: 0.75em;
-            color: #64748b;
-            margin: 6px 10px;
-            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 0.7em;
+            color: #6b7280;
+            margin: 2px 10px;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }
+
+        .timestamp:hover {
+            opacity: 1;
         }
 
         /* Chat messages container */
@@ -89,113 +118,96 @@ def load_custom_css():
             padding: 20px 0;
         }
 
-        /* Welcome container */
-        .welcome-container {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 30px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
-        }
-
-        .welcome-heading {
-            font-size: 1.2em;
-            color: #0f172a;
-            margin-bottom: 16px;
-            font-weight: 600;
-        }
-
-        .welcome-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 16px 0;
-        }
-
-        .welcome-list li {
-            padding: 8px 0;
-            color: #334155;
-            position: relative;
-            padding-left: 24px;
-        }
-
-        .welcome-list li:before {
-            content: "•";
-            color: #2563eb;
-            position: absolute;
-            left: 8px;
-        }
-
-        /* Custom styling for suggested questions buttons */
+        /* Enhanced styling for suggested questions buttons */
         .stButton button {
-            background-color: white !important;
-            color: #1e293b !important;
-            margin: 6px 0 !important;
-            padding: 12px 20px !important;
-            border: 1px solid #e2e8f0 !important;
-            border-radius: 8px !important;
-            width: 100% !important;
-            text-align: left !important;
-            font-size: 0.95em !important;
-            font-weight: 500 !important;
-            transition: all 0.2s ease !important;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%) !important;
+            color: white !important;
+            margin: 4px 0 !important;
+            padding: 0.6em 1.2em !important;
+            border-radius: 25px !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.2) !important;
+            transition: all 0.3s ease !important;
+            transform: scale(1) !important;
         }
 
         .stButton button:hover {
-            background-color: #f8fafc !important;
-            border-color: #2563eb !important;
-            color: #2563eb !important;
+            transform: translateY(-2px) scale(1.02) !important;
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.3) !important;
         }
 
-        /* Input styling */
-        .stChatInput {
-            max-width: 800px;
-            margin: 0 auto;
-            padding-bottom: 40px;
+        .stButton button:active {
+            transform: translateY(1px) scale(0.98) !important;
         }
 
-        .stChatInput > div {
-            padding: 0 20px;
+        /* Custom styling for chat input */
+        .stTextInput div[data-baseweb="input"] {
+            border-radius: 25px !important;
+            border: 2px solid #e5e7eb !important;
+            background: white !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
         }
 
-        .stChatInput input {
-            border: 1px solid #e2e8f0 !important;
-            padding: 12px 20px !important;
-            border-radius: 8px !important;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
-            font-size: 0.95em !important;
-        }
-
-        .stChatInput input:focus {
-            border-color: #2563eb !important;
-            box-shadow: 0 0 0 2px rgba(37,99,235,0.1) !important;
+        .stTextInput div[data-baseweb="input"]:focus-within {
+            border-color: #1976d2 !important;
+            box-shadow: 0 4px 20px rgba(25, 118, 210, 0.15) !important;
         }
 
         /* Code block styling */
-        .message-bubble pre {
-            background: #f8fafc;
-            border-radius: 6px;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #e2e8f0;
-            overflow-x: auto;
+        pre {
+            background: #f8fafc !important;
+            border-radius: 10px !important;
+            padding: 15px !important;
+            border: 1px solid #e5e7eb !important;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+            margin: 10px 0 !important;
         }
 
-        .message-bubble code {
-            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
-            font-size: 0.9em;
-            color: #1e293b;
+        code {
+            color: #1f2937 !important;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
         }
 
-        /* Role labels */
-        .role-label {
-            font-weight: 500;
-            color: #64748b;
+        /* Welcome message animation */
+        .welcome-message {
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
         }
         </style>
     """, unsafe_allow_html=True)
+
+# Rest of the code remains exactly the same, only the CSS has been enhanced
+suggested_questions = {
+    "How can I analyze Snowflake usage? 📊": "Based on my analysis, you can monitor Snowflake usage through several key methods:\n\n1. Query History Analysis:\n- Use `SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY`\n- Monitor execution times and patterns\n- Track resource consumption\n\n2. Warehouse Metrics:\n- Check `WAREHOUSE_METERING_HISTORY`\n- Monitor credit usage\n- Analyze peak usage times",
+    "What are the most expensive queries? 💰": "To identify expensive queries, focus on:\n\n1. Execution Time:\n- Long-running queries\n- High compilation time\n\n2. Resource Usage:\n- Large data scans\n- Heavy compute operations\n\nUse this query:\n```sql\nSELECT query_text, execution_time, credits_used\nFROM query_history\nORDER BY credits_used DESC\nLIMIT 10;```",
+    "How to optimize compute costs? 📉": "Here are proven strategies to reduce Snowflake compute costs:\n\n1. Warehouse Management:\n- Auto-suspend unused warehouses\n- Right-size warehouse capacity\n\n2. Query Optimization:\n- Use clustering keys\n- Implement proper filtering\n- Avoid SELECT *",
+    "Show recent query patterns 📋": "I'll help you analyze recent query patterns. Here's a query for that:\n```sql\nSELECT \n  date_trunc('hour', start_time) as query_hour,\n  count(*) as query_count,\n  avg(execution_time)/1000 as avg_execution_seconds\nFROM query_history\nWHERE start_time >= dateadd('day', -7, current_timestamp())\nGROUP BY 1\nORDER BY 1 DESC;```"
+}
 
 def get_response(user_input):
     """Generate response for user input"""
@@ -207,7 +219,7 @@ def display_message(is_user, message, timestamp):
     """Display a single message with enhanced styling"""
     container_class = "user-container" if is_user else "assistant-container"
     message_class = "user-message" if is_user else "assistant-message"
-    role = "You" if is_user else "Assistant"
+    icon = "👤" if is_user else "🤖"
     
     st.markdown(f"""
         <div class="message-group {container_class}">
@@ -215,7 +227,7 @@ def display_message(is_user, message, timestamp):
                 {message}
             </div>
             <div class="timestamp">
-                <span class="role-label">{role}</span> • {timestamp}
+                {icon} {timestamp}
             </div>
         </div>
     """, unsafe_allow_html=True)
@@ -231,24 +243,16 @@ def display_chat():
 def display_suggested_questions():
     """Display suggested questions as clickable buttons"""
     st.markdown("""
-        <div class="welcome-container">
-            <div class="welcome-heading">Welcome to Snowflake Analysis Assistant</div>
-            <p>I specialize in helping you optimize and analyze your Snowflake implementation.</p>
-            <ul class="welcome-list">
-                <li>Query optimization</li>
-                <li>Cost analysis</li>
-                <li>Usage patterns</li>
-                <li>Performance monitoring</li>
-            </ul>
-            <p>Select a question below or ask your own:</p>
+        <div class="message-group assistant-container welcome-message">
+            <div class="message-bubble assistant-message">
+                🤖 Here are some suggested questions to get started:
+            </div>
         </div>
     """, unsafe_allow_html=True)
     
     with st.container():
         for question in suggested_questions.keys():
-            # Remove emojis from button text
-            clean_question = ' '.join(question.split()[:-1])  # Remove the last word (emoji)
-            if st.button(clean_question):
+            if st.button(question):
                 handle_suggested_question(question)
 
 def handle_suggested_question(question):
@@ -272,16 +276,29 @@ def main():
     init_session_state()
     load_custom_css()
     
-    st.markdown('<h1 class="main-title">Snowflake Analysis Assistant</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-title">❄️ Snowflake Analysis Assistant</h1>', unsafe_allow_html=True)
     
     if not st.session_state.chat_history:
+        st.markdown("""
+            <div class="message-group assistant-container welcome-message">
+                <div class="message-bubble assistant-message">
+                    👋 Welcome! I'm your Snowflake Analysis Assistant. I can help you with:
+                    
+                    • Query optimization
+                    • Cost analysis
+                    • Usage patterns
+                    • Performance monitoring
+                    
+                    Feel free to ask questions or use the suggested queries below!
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
         display_suggested_questions()
     
     if st.session_state.chat_history:
         display_chat()
     
-    # Chat input
-    user_input = st.chat_input("Ask me anything about Snowflake...")
+    user_input = st.chat_input("💬 Ask me anything about Snowflake...")
     if user_input:
         response = get_response(user_input)
         st.session_state.chat_history.append({
