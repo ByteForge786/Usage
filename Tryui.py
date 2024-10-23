@@ -1,11 +1,9 @@
 import streamlit as st
 from datetime import datetime
 
-# Initialize chat history and input
+# Initialize chat history
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
-if "user_input" not in st.session_state:
-    st.session_state.user_input = ""
 
 # Suggested questions
 suggested_questions = {
@@ -16,10 +14,11 @@ suggested_questions = {
 }
 
 def get_response(user_input):
-    # Example response logic for demo purposes
+    # Example response logic
     return f"Here's a response to your query: {user_input}"
 
 def display_chat():
+    """Function to display chat history"""
     st.markdown("### Chat History")
     for chat in st.session_state.chat_history:
         st.markdown(f"**You**: {chat['user_input']}")
@@ -35,7 +34,6 @@ def main():
         st.markdown("#### Suggested questions:")
         for question, response in suggested_questions.items():
             if st.button(question):
-                st.session_state.user_input = question
                 st.session_state.chat_history.append({
                     "user_input": question,
                     "response": response,
@@ -45,17 +43,17 @@ def main():
     # Display chat history
     display_chat()
 
-    # User input field
-    user_input = st.text_input("Ask me a question:", value=st.session_state.user_input)
+    # User chat input
+    user_input = st.chat_input("Ask me a question")
 
-    if user_input and st.button("Submit"):
+    # Handle user input from the chat input box
+    if user_input:
         response = get_response(user_input)
         st.session_state.chat_history.append({
             "user_input": user_input,
             "response": response,
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         })
-        st.session_state.user_input = ""
 
 if __name__ == "__main__":
     main()
