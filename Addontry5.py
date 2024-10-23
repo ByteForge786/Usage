@@ -138,15 +138,19 @@ def display_suggested_questions():
         <div class="message-group assistant-container">
             <div class="message-bubble assistant-message">
                 🤖 Here are some suggested questions to get started:
+                <br><br>
+            """, unsafe_allow_html=True)
+    
+    # Create buttons within the same message container
+    for question in suggested_questions.keys():
+        if st.button(question):
+            handle_suggested_question(question)
+    
+    # Close the message container
+    st.markdown("""
             </div>
         </div>
     """, unsafe_allow_html=True)
-    
-    # Create a container for suggested questions
-    with st.container():
-        for question in suggested_questions.keys():
-            if st.button(question):
-                handle_suggested_question(question)
 
 def handle_suggested_question(question):
     """Handle suggested question selection"""
