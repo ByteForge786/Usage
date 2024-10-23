@@ -4,6 +4,8 @@ from datetime import datetime
 def init_session_state():
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
+    if "suggestions_shown" not in st.session_state:
+        st.session_state.suggestions_shown = False
 
 def load_custom_css():
     st.markdown("""
@@ -72,39 +74,29 @@ def load_custom_css():
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
+        /* Suggestion links styling */
+        .suggestion-link {
+            color: #1976d2;
+            text-decoration: none;
+            cursor: pointer;
+            display: block;
+            margin: 8px 0;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: #e3f2fd;
+            transition: all 0.2s ease;
+        }
+
+        .suggestion-link:hover {
+            background: #bbdefb;
+            transform: translateX(2px);
+        }
+
         /* Icons and metadata */
         .timestamp {
             font-size: 0.7em;
             color: #6b7280;
             margin: 2px 10px;
-        }
-
-        /* Suggested questions section */
-        .suggested-questions {
-            background-color: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        /* Button styling */
-        .stButton button {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            transition: all 0.2s ease;
-            margin: 5px 0;
-            width: 100%;
-            text-align: left;
-        }
-
-        .stButton button:hover {
-            background-color: #e3f2fd;
-            border-color: #90caf9;
-            transform: translateY(-1px);
         }
 
         /* Chat messages container */
@@ -145,6 +137,17 @@ def display_message(is_user, message, timestamp):
         </div>
     """, unsafe_allow_html=True)
 
+def display_suggestions():
+    """Display suggested questions as clickable chat messages"""
+    suggestions_html = '<div class="message-group assistant-container"><div class="message-bubble assistant-message">'
+    suggestions_html += "Here are some questions you might find helpful:<br><br>"
+    
+    for question in suggested_questions.keys():
+        suggestions_html += f'<a class="suggestion-link" onclick="parent.postMessage({{question: \'{question}\'}}, \'*\')">{question}</a>'
+    
+    suggestions_html += '</div><div class="timestamp">🤖 Just now</div></div>'
+    st.markdown(suggestions_html, unsafe_allow_html=True)
+
 def display_chat():
     """Display chat history"""
     st.markdown('<div class="chat-messages">', unsafe_allow_html=True)
@@ -152,23 +155,6 @@ def display_chat():
         display_message(True, chat['user_input'], chat['timestamp'])
         display_message(False, chat['response'], chat['timestamp'])
     st.markdown('</div>', unsafe_allow_html=True)
-
-def display_suggested_questions():
-    """Display suggested questions directly in the chat interface"""
-    st.markdown("#### 💡 Suggested Questions:")
-    for idx, question in enumerate(suggested_questions.keys()):
-        if st.button(question, key=f"suggest_{idx}"):
-            handle_suggested_question(question)
-
-def handle_suggested_question(question):
-    """Handle suggested question selection"""
-    response = suggested_questions[question]
-    st.session_state.chat_history.append({
-        "user_input": question,
-        "response": response,
-        "timestamp": datetime.now().strftime("%I:%M %p")
-    })
-    st.rerun()
 
 def main():
     st.set_page_config(
@@ -183,7 +169,8 @@ def main():
     
     st.markdown('<h1 class="main-title">❄️ Snowflake Analysis Assistant</h1>', unsafe_allow_html=True)
     
-    if not st.session_state.chat_history:
+    # Welcome message and suggestions
+    if not st.session_state.chat_history and not st.session_state.suggestions_shown:
         st.markdown("""
             <div class="message-group assistant-container">
                 <div class="message-bubble assistant-message">
@@ -194,16 +181,32 @@ def main():
                     • Usage patterns
                     • Performance monitoring
                     
-                    Feel free to ask questions or use the suggested queries below!
+                    Let me show you some common questions people ask!
                 </div>
+                <div class="timestamp">🤖 Just now</div>
             </div>
         """, unsafe_allow_html=True)
+        display_suggestions()
+        st.session_state.suggestions_shown = True
     
     if st.session_state.chat_history:
         display_chat()
     
-    # Display suggested questions within the chat interface
-    display_suggested_questions()
+    # Add JavaScript to handle suggestion clicks
+    st.markdown("""
+        <script>
+        window.addEventListener('message', function(e) {
+            if (e.data.question) {
+                const input = window.parent.document.querySelector('.stChatInput input');
+                if (input) {
+                    input.value = e.data.question;
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                    input.form.requestSubmit();
+                }
+            }
+        });
+        </script>
+    """, unsafe_allow_html=True)
     
     # Chat input
     user_input = st.chat_input("💬 Ask me anything about Snowflake...")
