@@ -91,17 +91,6 @@ def load_custom_css():
             color: white !important;
             margin: 2px 0 !important;
         }
-
-        /* Custom container for suggested questions */
-        .suggested-questions {
-            background-color: white;
-            border-radius: 20px;
-            border-top-left-radius: 5px;
-            padding: 12px 18px;
-            margin: 5px 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            max-width: 70%;
-        }
         </style>
     """, unsafe_allow_html=True)
 
@@ -145,20 +134,19 @@ def display_chat():
 
 def display_suggested_questions():
     """Display suggested questions as clickable buttons"""
-    st.markdown('<div style="float: left; max-width: 70%;">', unsafe_allow_html=True)
-    with st.container():
-        st.markdown("""
-            <div class="suggested-questions">
-                🤖 Here are some suggested questions to get started:<br><br>
-            """, unsafe_allow_html=True)
-        
-        col1 = st.columns(1)[0]
-        with col1:
-            for question in suggested_questions.keys():
-                if st.button(question):
-                    handle_suggested_question(question)
+    st.markdown("""
+        <div class="message-group assistant-container">
+            <div class="message-bubble assistant-message">
+                🤖 Here are some suggested questions to get started:
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
     
-    st.markdown('</div>', unsafe_allow_html=True)
+    # Create a container for suggested questions
+    with st.container():
+        for question in suggested_questions.keys():
+            if st.button(question):
+                handle_suggested_question(question)
 
 def handle_suggested_question(question):
     """Handle suggested question selection"""
