@@ -74,26 +74,6 @@ def load_custom_css():
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        /* Suggestion button styling */
-        .suggestion-button {
-            background: #e3f2fd;
-            border: none;
-            color: #1976d2;
-            padding: 8px 12px;
-            margin: 8px 0;
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: left;
-            display: block;
-            width: 100%;
-            transition: all 0.2s ease;
-        }
-
-        .suggestion-button:hover {
-            background: #bbdefb;
-            transform: translateX(2px);
-        }
-
         /* Icons and metadata */
         .timestamp {
             font-size: 0.7em;
@@ -140,29 +120,29 @@ def display_message(is_user, message, timestamp):
     """, unsafe_allow_html=True)
 
 def display_suggestions():
-    """Display suggested questions as chat messages with streamlit buttons"""
-    st.markdown(
-        '<div class="message-group assistant-container">'
-        '<div class="message-bubble assistant-message">'
-        'Here are some questions you might find helpful:<br><br>'
-        '</div>'
-        '<div class="timestamp">🤖 Just now</div>'
-        '</div>',
-        unsafe_allow_html=True
-    )
+    """Display suggested questions as clickable buttons in chat format"""
+    st.markdown("""
+        <div class="message-group assistant-container">
+            <div class="message-bubble assistant-message">
+                Here are some questions you might find helpful:
+            </div>
+            <div class="timestamp">
+                🤖 Just now
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
     
-    # Create a container for the suggestions
-    with st.container():
-        for question in suggested_questions.keys():
-            if st.button(question, key=f"suggest_{question}", use_container_width=True):
-                timestamp = datetime.now().strftime("%I:%M %p")
-                response = suggested_questions[question]
-                st.session_state.chat_history.append({
-                    "user_input": question,
-                    "response": response,
-                    "timestamp": timestamp
-                })
-                st.rerun()
+    # Display each suggestion as a button
+    for question in suggested_questions.keys():
+        if st.button(question, key=f"suggest_{question}"):
+            current_time = datetime.now().strftime("%I:%M %p")
+            response = suggested_questions[question]
+            st.session_state.chat_history.append({
+                "user_input": question,
+                "response": response,
+                "timestamp": current_time
+            })
+            st.rerun()
 
 def display_chat():
     """Display chat history"""
@@ -211,11 +191,12 @@ def main():
     # Chat input
     user_input = st.chat_input("💬 Ask me anything about Snowflake...")
     if user_input:
+        current_time = datetime.now().strftime("%I:%M %p")
         response = get_response(user_input)
         st.session_state.chat_history.append({
             "user_input": user_input,
             "response": response,
-            "timestamp": datetime.now().strftime("%I:%M %p")
+            "timestamp": current_time
         })
         st.rerun()
 
