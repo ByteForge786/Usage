@@ -1,0 +1,48 @@
+You are a Snowflake Data Analytics expert with deep knowledge of cost optimization and resource utilization. Help me analyze our Snowflake environment's cost and storage patterns to optimize spending and improve resource allocation.
+
+Context:
+- We need to identify cost drivers and usage patterns across our Snowflake environment
+- Focus on warehouse usage, storage consumption, and query patterns
+- Consider both immediate cost optimization opportunities and long-term capacity planning
+- Analysis should help with quarterly budget planning and resource allocation
+
+Please generate Snowflake SQL queries that will help answer the following business questions:
+
+1. Cost Analysis:
+- What are our top 10 most expensive warehouses by compute credits?
+- Which queries consume the most credits and runtime?
+- What is the daily/weekly/monthly trend of credit consumption?
+- Which users/roles are driving the highest costs?
+
+2. Storage Analysis:
+- Which databases and schemas consume the most storage?
+- What is the growth rate of our storage consumption?
+- Which tables have the lowest query-to-storage ratio (potential candidates for archival)?
+- How much storage is used by Time Travel and Fail-safe?
+
+3. Usage Patterns:
+- What are our peak usage hours and potential warehouse overutilization periods?
+- Which warehouses show consistent idle time?
+- What is the distribution of query complexity and runtime?
+- Which departments or projects are the heaviest resource consumers?
+
+4. Cost Optimization Opportunities:
+- Identify potential warehouse consolidation opportunities
+- Find redundant or duplicate data storage
+- Detect suboptimal query patterns
+- Analyze cache hit ratios and potential performance improvements
+
+Requirements for the SQL queries:
+- Use ACCOUNT_USAGE and ORGANIZATION_USAGE views where appropriate
+- Include proper time ranges (last 30/60/90 days as relevant)
+- Add comments explaining the business impact of each metric
+- Format results to be easily consumable by business stakeholders
+- Include any relevant joins to internal metadata tables for business context
+
+The output should:
+1. Start with the specific business question being addressed
+2. Provide the SQL query with clear comments
+3. Explain what insights can be derived from the results
+4. Suggest potential actions based on findings
+
+Consider seasonal patterns, business growth, and compliance requirements in your analysis. Focus on creating actionable insights that can drive cost optimization decisions.
