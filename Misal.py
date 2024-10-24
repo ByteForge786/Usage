@@ -235,3 +235,63 @@ def load_custom_css():
         }
         </style>
     """, unsafe_allow_html=True)
+
+
+
+
+
+def load_custom_css():
+    st.markdown("""
+        <style>
+        /* Remove default Streamlit padding */
+        .block-container {
+            padding-top: 0rem !important;
+            padding-bottom: 0rem !important;
+            margin-top: 0rem !important;
+            padding-left: 1rem !important;   /* Reduced side padding */
+            padding-right: 1rem !important;  /* Reduced side padding */
+            max-width: 100% !important;      /* Allow full width */
+        }
+
+        /* Chat message containers */
+        .chat-container {
+            margin: 20px 0;
+            clear: both;
+            overflow: hidden;
+            padding: 0 20px;  /* Reduced from 40px */
+        }
+
+        .message-group {
+            max-width: 85%;  /* Increased from 70% to allow messages to extend further */
+            margin: 10px 0;
+            clear: both;
+        }
+
+        /* Chat input adjustments */
+        .stChatInput {
+            position: fixed;
+            bottom: 0;
+            padding: 5px 20px !important;  /* Reduced side padding from 60px */
+            background-color: white;
+            border-top: 1px solid #e5e7eb;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+        }
+
+        /* Adjust main content area */
+        .main > div {
+            padding-left: 1rem !important;   /* Reduced side padding */
+            padding-right: 1rem !important;  /* Reduced side padding */
+        }
+
+        /* Welcome message and suggested questions container */
+        [data-testid="stMarkdownContainer"] > div {
+            padding-left: 10px !important;   /* Reduced padding */
+            padding-right: 10px !important;  /* Reduced padding */
+        }
+
+        /* Keep other styles the same... */
+        </style>
+    """, unsafe_allow_html=True)
