@@ -1,11 +1,19 @@
-.welcome-container {
-    margin-bottom: 5px !important;
-}
 
-.suggestions-container {
-    margin-top: 5px !important;
-}
-
+# Add this CSS within your load_custom_css() function where other styles are defined
+st.markdown("""
+    <style>
+    /* Chat input container - targets the containing div */
+    .stChatInputContainer {
+        padding: 0 40px;  /* Matches your chat container padding */
+    }
+    
+    /* Chat input field - targets the actual input element */
+    .stChatInput {
+        width: 100%;
+        max-width: none !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 import streamlit as st
 from datetime import datetime
