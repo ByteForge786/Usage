@@ -184,3 +184,54 @@ def load_custom_css():
     """, unsafe_allow_html=True)
 
 # ... Rest of the code remains the same ...
+def load_custom_css():
+    st.markdown("""
+        <style>
+        /* Previous CSS remains the same... */
+
+        /* Adjusted chat input styling */
+        .stChatInput {
+            position: fixed;
+            bottom: 0;
+            padding: 5px 60px !important;  /* Reduced padding */
+            background-color: white;
+            border-top: 1px solid #e5e7eb;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Additional chat input height adjustments */
+        .stChatInput > div {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        .stChatInput textarea {
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+            min-height: 40px !important;
+            max-height: 40px !important;
+            height: 40px !important;
+        }
+
+        /* Adjust footer position to match new chat input height */
+        .footer {
+            position: fixed;
+            bottom: 50px;  /* Adjusted to match new chat input height */
+            left: 0;
+            width: 100%;
+            background-color: white;
+            padding: 8px 0;  /* Slightly reduced padding */
+            text-align: center;
+            font-size: 0.8em;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Adjust chat messages bottom margin to prevent overlap with shorter input */
+        .chat-messages {
+            margin-bottom: 100px;  /* Adjusted to account for shorter input and footer */
+            padding: 20px 0;
+        }
+        </style>
+    """, unsafe_allow_html=True)
