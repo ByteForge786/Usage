@@ -1,60 +1,44 @@
-
-# Add this CSS within your load_custom_css() function where other styles are defined
-st.markdown("""
-    <style>
-    /* Chat input container - targets the containing div */
-    .stChatInputContainer {
-        padding: 0 40px;  /* Matches your chat container padding */
-    }
-    
-    /* Chat input field - targets the actual input element */
-    .stChatInput {
-        width: 100%;
-        max-width: none !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
 import streamlit as st
 from datetime import datetime
-import time
 
 def init_session_state():
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
-    if "thinking" not in st.session_state:
-        st.session_state.thinking = False
 
 def load_custom_css():
     st.markdown("""
         <style>
-        /* Remove default Streamlit padding and margins */
-        .block-container {
-            padding-top: 0rem !important;
-            padding-bottom: 0rem !important;
-            margin-top: 0rem !important;
-        }
-
-        /* Hide Streamlit's default header */
-        header[data-testid="stHeader"] {
-            display: none !important;
+        /* Dark mode color palette */
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #1d4ed8;
+            --border-color: #334155;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --success-color: #059669;
+            --hover-color: #2563eb;
         }
 
         /* Main container and general styling */
         .stApp {
-            background-color: #f5f7fb !important;
+            background-color: var(--bg-primary) !important;
+            color: var(--text-primary) !important;
         }
         
         .main-title {
-            color: #1976d2;
+            color: var(--accent-primary);
             font-size: 2.2em;
             font-weight: 600;
             text-align: center;
             padding: 20px 0;
             margin-bottom: 30px;
-            background: white;
+            background: var(--bg-secondary);
             border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px var(--shadow-color);
+            border: 1px solid var(--border-color);
         }
 
         /* Chat message containers */
@@ -92,49 +76,24 @@ def load_custom_css():
         }
 
         .user-message {
-            background-color: #1976d2;
-            color: white;
+            background-color: var(--accent-primary);
+            color: var(--text-primary);
             border-top-right-radius: 5px;
+            box-shadow: 0 2px 4px var(--shadow-color);
         }
 
         .assistant-message {
-            background-color: white;
-            color: #1f2937;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
             border-top-left-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        /* Thinking animation */
-        .thinking-bubble {
-            background-color: #e5e7eb;
-            color: #6b7280;
-            border-top-left-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .thinking-dots {
-            display: inline-block;
-        }
-
-        .thinking-dots:after {
-            content: '...';
-            animation: thinking 1.5s steps(4, end) infinite;
-            display: inline-block;
-            vertical-align: bottom;
-            width: 20px;
-        }
-
-        @keyframes thinking {
-            0%, 20% { content: ''; }
-            40% { content: '.'; }
-            60% { content: '..'; }
-            80%, 100% { content: '...'; }
+            box-shadow: 0 2px 4px var(--shadow-color);
+            border: 1px solid var(--border-color);
         }
 
         /* Icons and metadata */
         .timestamp {
             font-size: 0.7em;
-            color: #6b7280;
+            color: var(--text-secondary);
             margin: 2px 10px;
         }
 
@@ -146,9 +105,16 @@ def load_custom_css():
 
         /* Custom styling for suggested questions buttons */
         .stButton button {
-            background-color: #1976d2 !important;
-            color: white !important;
+            background-color: var(--bg-secondary) !important;
+            color: var(--text-primary) !important;
+            border: 1px solid var(--border-color) !important;
             margin: 2px 0 !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .stButton button:hover {
+            background-color: var(--hover-color) !important;
+            border-color: var(--hover-color) !important;
         }
 
         /* Footer styling */
@@ -157,149 +123,105 @@ def load_custom_css():
             bottom: 60px;
             left: 0;
             width: 100%;
-            background-color: white;
+            background-color: var(--bg-secondary);
             padding: 10px 0;
             text-align: center;
             font-size: 0.8em;
-            color: #6b7280;
-            border-top: 1px solid #e5e7eb;
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            box-shadow: 0 -2px 5px var(--shadow-color);
         }
 
-        /* Adjust chat input position */
+        /* Chat input styling */
         .stChatInput {
             position: fixed;
             bottom: 0;
+            width: 100%;
             padding: 10px 60px;
-            background-color: white;
-            border-top: 1px solid #e5e7eb;
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+            background-color: var(--bg-secondary) !important;
+            border-top: 1px solid var(--border-color);
+            box-shadow: 0 -2px 5px var(--shadow-color);
         }
 
-        /* Style main app container */
-        section[data-testid="stSidebar"] {
-            display: none !important;
-        }
-
-        .main > div {
-            padding-top: 0 !important;
-        }
-
-        div[data-testid="stToolbar"] {
-            display: none !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
-
-# ... Rest of the code remains the same ...
-def load_custom_css():
-    st.markdown("""
-        <style>
-        /* Previous CSS remains the same... */
-
-        /* Adjusted chat input styling */
-        .stChatInput {
-            position: fixed;
-            bottom: 0;
-            padding: 5px 60px !important;  /* Reduced padding */
-            background-color: white;
-            border-top: 1px solid #e5e7eb;
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
-        }
-
-        /* Additional chat input height adjustments */
         .stChatInput > div {
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
+            background-color: var(--bg-secondary) !important;
         }
 
         .stChatInput textarea {
-            padding-top: 8px !important;
-            padding-bottom: 8px !important;
-            min-height: 40px !important;
-            max-height: 40px !important;
-            height: 40px !important;
+            background-color: var(--bg-primary) !important;
+            color: var(--text-primary) !important;
+            border: 1px solid var(--border-color) !important;
         }
 
-        /* Adjust footer position to match new chat input height */
-        .footer {
-            position: fixed;
-            bottom: 50px;  /* Adjusted to match new chat input height */
-            left: 0;
-            width: 100%;
-            background-color: white;
-            padding: 8px 0;  /* Slightly reduced padding */
-            text-align: center;
-            font-size: 0.8em;
-            color: #6b7280;
-            border-top: 1px solid #e5e7eb;
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+        .stChatInput textarea:focus {
+            border-color: var(--accent-primary) !important;
+            box-shadow: 0 0 0 1px var(--accent-primary) !important;
         }
 
-        /* Adjust chat messages bottom margin to prevent overlap with shorter input */
-        .chat-messages {
-            margin-bottom: 100px;  /* Adjusted to account for shorter input and footer */
-            padding: 20px 0;
+        /* Code block styling */
+        pre {
+            background-color: var(--bg-primary) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 6px;
+        }
+
+        code {
+            color: var(--text-primary) !important;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* Additional Streamlit element overrides */
+        .stMarkdown {
+            color: var(--text-primary) !important;
+        }
+
+        .reportview-container {
+            background-color: var(--bg-primary) !important;
+        }
+
+        .sidebar .sidebar-content {
+            background-color: var(--bg-secondary) !important;
         }
         </style>
     """, unsafe_allow_html=True)
 
+# Rest of your existing code remains the same, starting from:
+suggested_questions = {
+    # ... your existing suggested questions
+}
 
+# ... all other functions remain unchanged ...
 
+def main():
+    st.set_page_config(
+        page_title="Snowflake Assistant",
+        page_icon="❄️",
+        layout="wide",
+        initial_sidebar_state="collapsed"
+    )
+    
+    init_session_state()
+    load_custom_css()
+    
+    # ... rest of your existing main() function ...
 
-
-def load_custom_css():
-    st.markdown("""
-        <style>
-        /* Remove default Streamlit padding */
-        .block-container {
-            padding-top: 0rem !important;
-            padding-bottom: 0rem !important;
-            margin-top: 0rem !important;
-            padding-left: 1rem !important;   /* Reduced side padding */
-            padding-right: 1rem !important;  /* Reduced side padding */
-            max-width: 100% !important;      /* Allow full width */
-        }
-
-        /* Chat message containers */
-        .chat-container {
-            margin: 20px 0;
-            clear: both;
-            overflow: hidden;
-            padding: 0 20px;  /* Reduced from 40px */
-        }
-
-        .message-group {
-            max-width: 85%;  /* Increased from 70% to allow messages to extend further */
-            margin: 10px 0;
-            clear: both;
-        }
-
-        /* Chat input adjustments */
-        .stChatInput {
-            position: fixed;
-            bottom: 0;
-            padding: 5px 20px !important;  /* Reduced side padding from 60px */
-            background-color: white;
-            border-top: 1px solid #e5e7eb;
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
-            left: 0;
-            right: 0;
-            margin: 0 auto;
-        }
-
-        /* Adjust main content area */
-        .main > div {
-            padding-left: 1rem !important;   /* Reduced side padding */
-            padding-right: 1rem !important;  /* Reduced side padding */
-        }
-
-        /* Welcome message and suggested questions container */
-        [data-testid="stMarkdownContainer"] > div {
-            padding-left: 10px !important;   /* Reduced padding */
-            padding-right: 10px !important;  /* Reduced padding */
-        }
-
-        /* Keep other styles the same... */
-        </style>
-    """, unsafe_allow_html=True)
+if __name__ == "__main__":
+    main()
