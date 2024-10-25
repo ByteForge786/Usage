@@ -14,73 +14,54 @@ def load_custom_css():
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             z-index: 9999;
             width: 320px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
         }
 
-        .date-selector-header {
+        .date-range-title {
             font-size: 14px;
             color: #1976d2;
             font-weight: 600;
-            margin-bottom: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            margin-bottom: 10px;
         }
 
-        .date-inputs-container {
-            display: flex;
+        .date-inputs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 10px;
-            align-items: center;
-        }
-
-        .date-inputs-container > div {
-            flex: 1;
-        }
-
-        /* Custom styling for Streamlit's date input */
-        .floating-date-container .stDateInput > div[data-baseweb="input"] {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-        }
-
-        .floating-date-container .stDateInput > label {
-            font-size: 12px;
-            color: #64748b;
-        }
-
-        .floating-date-container .stDateInput > div[data-baseweb="input"]:hover {
-            border-color: #1976d2;
+            margin-bottom: 10px;
         }
 
         /* Quick select buttons */
-        .quick-select-container {
-            display: flex;
+        .quick-select-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 8px;
-            margin-top: 8px;
         }
 
-        .quick-select-button {
+        .quick-select-btn {
             background-color: #f1f5f9;
-            color: #1976d2;
             border: none;
-            padding: 4px 8px;
+            padding: 5px;
             border-radius: 6px;
-            font-size: 12px;
             cursor: pointer;
+            color: #1976d2;
+            font-size: 12px;
+            font-weight: 500;
             transition: all 0.2s;
         }
 
-        .quick-select-button:hover {
+        .quick-select-btn:hover {
             background-color: #1976d2;
             color: white;
         }
 
-        /* Ensure main content doesn't go under the date selector */
-        .main-title {
-            margin-top: 100px !important;
+        .quick-select-btn.active {
+            background-color: #1976d2;
+            color: white;
+        }
+
+        /* Hide the default Streamlit date input labels but keep the inputs */
+        .date-inputs-grid [data-testid="stDateInput"] > label {
+            display: none;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -90,65 +71,78 @@ def init_date_range():
         st.session_state.start_date = datetime.now() - timedelta(days=7)
     if "end_date" not in st.session_state:
         st.session_state.end_date = datetime.now()
+    if "active_range" not in st.session_state:
+        st.session_state.active_range = "7D"
 
-def apply_quick_select(days):
-    st.session_state.start_date = datetime.now() - timedelta(days=days)
-    st.session_state.end_date = datetime.now()
+def apply_quick_select(days, label):
+    st.session_state.start_date = datetime.now().date() - timedelta(days=days)
+    st.session_state.end_date = datetime.now().date()
+    st.session_state.active_range = label
     st.rerun()
 
 def display_date_range():
-    st.markdown("""
-        <div class="floating-date-container">
-            <div class="date-selector-header">
-                <span>📅 Date Range</span>
-            </div>
-            <div class="date-inputs-container">
-    """, unsafe_allow_html=True)
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        start_date = st.date_input(
-            "From",
-            value=st.session_state.start_date,
-            key="start_date_input",
-            format="MM/DD/YYYY"
-        )
-    
-    with col2:
-        end_date = st.date_input(
-            "To",
-            value=st.session_state.end_date,
-            key="end_date_input",
-            format="MM/DD/YYYY"
-        )
+    # Create empty container for the floating box
+    date_container = st.container()
 
-    st.markdown("""
-            </div>
-            <div class="quick-select-container">
-                <button class="quick-select-button" onclick="handleQuickSelect(7)">7D</button>
-                <button class="quick-select-button" onclick="handleQuickSelect(14)">14D</button>
-                <button class="quick-select-button" onclick="handleQuickSelect(30)">30D</button>
-                <button class="quick-select-button" onclick="handleQuickSelect(90)">90D</button>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-    
-    # JavaScript for quick select buttons
-    st.markdown("""
-        <script>
-        function handleQuickSelect(days) {
-            const event = new CustomEvent('quickSelect', { detail: { days: days } });
-            window.dispatchEvent(event);
+    with date_container:
+        # Use columns to create the layout inside the floating box
+        st.markdown('<div class="floating-date-container">', unsafe_allow_html=True)
+        
+        # Title
+        st.markdown('<div class="date-range-title">📅 Select Date Range</div>', unsafe_allow_html=True)
+        
+        # Date inputs
+        st.markdown('<div class="date-inputs-grid">', unsafe_allow_html=True)
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            start_date = st.date_input(
+                "From",
+                value=st.session_state.start_date,
+                key="start_date_input",
+                format="MM/DD/YYYY"
+            )
+        
+        with col2:
+            end_date = st.date_input(
+                "To",
+                value=st.session_state.end_date,
+                key="end_date_input",
+                format="MM/DD/YYYY"
+            )
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Quick select buttons
+        st.markdown('<div class="quick-select-grid">', unsafe_allow_html=True)
+        
+        quick_ranges = {
+            "7D": 7,
+            "14D": 14,
+            "30D": 30,
+            "90D": 90
         }
-        </script>
-    """, unsafe_allow_html=True)
-    
-    # Update session state
-    if start_date:
-        st.session_state.start_date = start_date
-    if end_date:
-        st.session_state.end_date = end_date
+        
+        cols = st.columns(4)
+        for i, (label, days) in enumerate(quick_ranges.items()):
+            with cols[i]:
+                active_class = "active" if st.session_state.active_range == label else ""
+                if st.button(
+                    label,
+                    key=f"quick_select_{label}",
+                    use_container_width=True,
+                    type="primary" if st.session_state.active_range == label else "secondary"
+                ):
+                    apply_quick_select(days, label)
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Update session state
+        if start_date != st.session_state.start_date or end_date != st.session_state.end_date:
+            st.session_state.start_date = start_date
+            st.session_state.end_date = end_date
+            st.session_state.active_range = None  # Reset active range when manually selecting dates
+            st.rerun()
 
 def main():
     st.set_page_config(
@@ -165,7 +159,10 @@ def main():
     # Add the floating date range selector
     display_date_range()
     
-    # Rest of your main() function remains the same...
+    # Add spacing to prevent overlap with the floating box
+    st.markdown('<div style="height: 20px;"></div>', unsafe_allow_html=True)
+    
+    # Rest of your main() function remains the same
     st.markdown('<h1 class="main-title">❄️ Snowflake Analysis Assistant</h1>', unsafe_allow_html=True)
     
     if not st.session_state.chat_history:
