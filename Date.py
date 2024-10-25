@@ -1,141 +1,226 @@
-def load_custom_css():
+# Add these imports at the top of your file
+from datetime import datetime, timedelta
+
+def init_session_state():
+    # Add these to your existing init_session_state function
+    if "date_selector_open" not in st.session_state:
+        st.session_state.date_selector_open = False
+    if "start_date" not in st.session_state:
+        st.session_state.start_date = datetime.now() - timedelta(days=30)
+    if "end_date" not in st.session_state:
+        st.session_state.end_date = datetime.now()
+    if "selected_range" not in st.session_state:
+        st.session_state.selected_range = "30D"
+
+def load_date_selector_css():
     st.markdown("""
         <style>
-        /* Existing styles remain unchanged */
-        
-        /* Floating Date Range Selector */
-        .floating-date-container {
+        /* Floating date selector trigger button */
+        .date-trigger-button {
             position: fixed;
             top: 20px;
             right: 20px;
             background-color: white;
-            padding: 15px 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            z-index: 9999;
-            width: 320px;
+            border: 1px solid #e2e8f0;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
             display: flex;
-            flex-direction: column;
+            align-items: center;
             gap: 8px;
+            font-size: 13px;
+            color: #1f2937;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            z-index: 1000;
         }
 
-        .date-selector-header {
+        .date-trigger-button:hover {
+            border-color: #1976d2;
+        }
+
+        /* Floating date picker container */
+        .date-picker-container {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 16px;
+            width: 300px;
+            z-index: 1000;
+        }
+
+        /* Header styling */
+        .date-picker-header {
             font-size: 14px;
-            color: #1976d2;
             font-weight: 600;
-            margin-bottom: 5px;
+            color: #1f2937;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        /* Hide default Streamlit label and container styling */
-        .floating-date-container [data-testid="stVerticalBlock"] {
-            gap: 0 !important;
-            padding: 0 !important;
+        .close-button {
+            cursor: pointer;
+            color: #6b7280;
         }
 
-        .floating-date-container [data-testid="stDateInput"] > label {
-            display: none !important;
-        }
-
-        .floating-date-container [data-testid="stDateInput"] {
-            margin: 0 !important;
-        }
-
-        /* Custom styling for date inputs */
-        .date-input-wrapper {
-            margin-bottom: 5px;
-        }
-
-        .date-input-label {
-            font-size: 12px;
-            color: #64748b;
-            margin-bottom: 4px;
-            display: block;
+        .close-button:hover {
+            color: #1f2937;
         }
 
         /* Quick select buttons */
-        .quick-select-container {
+        .quick-select-row {
             display: flex;
             gap: 8px;
-            margin-top: 8px;
+            margin-bottom: 16px;
         }
 
         .quick-select-button {
-            background-color: #f1f5f9;
-            color: #1976d2;
-            border: none;
-            padding: 4px 8px;
+            flex: 1;
+            background-color: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            padding: 6px 12px;
             border-radius: 6px;
-            font-size: 12px;
             cursor: pointer;
-            transition: all 0.2s;
+            font-size: 12px;
+            color: #1f2937;
+            text-align: center;
         }
 
         .quick-select-button:hover {
             background-color: #1976d2;
             color: white;
+            border-color: #1976d2;
+        }
+
+        .quick-select-button.active {
+            background-color: #1976d2;
+            color: white;
+            border-color: #1976d2;
+        }
+
+        /* Date inputs styling */
+        .date-inputs-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .date-input-group {
+            flex: 1;
+        }
+
+        .date-input-label {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .date-picker-container [data-testid="stDateInput"] {
+            margin: 0 !important;
+        }
+
+        .date-picker-container [data-testid="stDateInput"] > label {
+            display: none !important;
+        }
+
+        /* Apply button */
+        .apply-button {
+            width: 100%;
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .apply-button:hover {
+            background-color: #1565c0;
         }
         </style>
     """, unsafe_allow_html=True)
 
-def display_date_range():
-    with st.container():
-        st.markdown('<div class="floating-date-container">', unsafe_allow_html=True)
-        st.markdown('<div class="date-selector-header">📅 Date Range</div>', unsafe_allow_html=True)
-        
-        # Create two columns for the date inputs
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown('<div class="date-input-wrapper">', unsafe_allow_html=True)
-            st.markdown('<span class="date-input-label">From</span>', unsafe_allow_html=True)
-            start_date = st.date_input(
-                "From",
-                value=st.session_state.start_date,
-                key="start_date_input",
-                format="MM/DD/YYYY",
-                label_visibility="collapsed"
-            )
-            st.markdown('</div>', unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown('<div class="date-input-wrapper">', unsafe_allow_html=True)
-            st.markdown('<span class="date-input-label">To</span>', unsafe_allow_html=True)
-            end_date = st.date_input(
-                "To",
-                value=st.session_state.end_date,
-                key="end_date_input",
-                format="MM/DD/YYYY",
-                label_visibility="collapsed"
-            )
-            st.markdown('</div>', unsafe_allow_html=True)
-
-        # Quick select buttons
-        st.markdown("""
-            <div class="quick-select-container">
-                <button class="quick-select-button" onclick="handleQuickSelect(7)">7D</button>
-                <button class="quick-select-button" onclick="handleQuickSelect(14)">14D</button>
-                <button class="quick-select-button" onclick="handleQuickSelect(30)">30D</button>
-                <button class="quick-select-button" onclick="handleQuickSelect(90)">90D</button>
+def display_date_selector():
+    # Add date selector CSS to your existing CSS
+    load_date_selector_css()
+    
+    # Display trigger button
+    st.markdown(f"""
+        <div class="date-trigger-button" onclick="this.style.display='none';document.getElementById('date-picker').style.display='block';">
+            📅 {st.session_state.start_date.strftime('%b %d')} - {st.session_state.end_date.strftime('%b %d')} ({st.session_state.selected_range})
+        </div>
+    """, unsafe_allow_html=True)
+    
+    # Date picker container
+    display_style = "none" if not st.session_state.date_selector_open else "block"
+    st.markdown(f"""
+        <div id="date-picker" class="date-picker-container" style="display: {display_style};">
+            <div class="date-picker-header">
+                <span>Select Date Range</span>
+                <span class="close-button" onclick="this.parentElement.parentElement.style.display='none';document.querySelector('.date-trigger-button').style.display='flex';">✕</span>
             </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        # JavaScript for quick select buttons
-        st.markdown("""
-            <script>
-            function handleQuickSelect(days) {
-                const event = new CustomEvent('quickSelect', { detail: { days: days } });
-                window.dispatchEvent(event);
-            }
-            </script>
-        """, unsafe_allow_html=True)
-        
-        # Update session state
-        if start_date:
-            st.session_state.start_date = start_date
-        if end_date:
-            st.session_state.end_date = end_date
+            <div class="quick-select-row">
+    """, unsafe_allow_html=True)
+    
+    # Quick select buttons
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        if st.button("7D", key="7d", use_container_width=True):
+            update_date_range(7)
+    with col2:
+        if st.button("30D", key="30d", use_container_width=True):
+            update_date_range(30)
+    with col3:
+        if st.button("60D", key="60d", use_container_width=True):
+            update_date_range(60)
+    with col4:
+        if st.button("90D", key="90d", use_container_width=True):
+            update_date_range(90)
+    
+    # Date inputs
+    col1, col2 = st.columns(2)
+    with col1:
+        start_date = st.date_input(
+            "Start Date",
+            value=st.session_state.start_date,
+            key="start_date_input",
+            label_visibility="collapsed"
+        )
+    with col2:
+        end_date = st.date_input(
+            "End Date",
+            value=st.session_state.end_date,
+            key="end_date_input",
+            label_visibility="collapsed"
+        )
+    
+    # Apply button
+    if st.button("Apply", use_container_width=True):
+        st.session_state.start_date = start_date
+        st.session_state.end_date = end_date
+        st.session_state.date_selector_open = False
+        st.rerun()
+
+def update_date_range(days):
+    st.session_state.end_date = datetime.now()
+    st.session_state.start_date = st.session_state.end_date - timedelta(days=days)
+    st.session_state.selected_range = f"{days}D"
+    st.session_state.date_selector_open = False
+    st.rerun()
+
+# In your main() function, add this line after init_session_state():
+def main():
+    # ... existing code ...
+    init_session_state()
+    load_custom_css()
+    
+    # Add the date selector
+    display_date_selector()
+    
+    # ... rest of your existing code ...
