@@ -239,3 +239,64 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
+def load_date_selector_css():
+    st.markdown("""
+        <style>
+        /* Floating date selector container - adjusted position */
+        .floating-date-selector {
+            position: fixed;
+            top: 20px;
+            right: 60px;  /* Increased to avoid overlap with Streamlit menu */
+            z-index: 999999;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            width: auto;
+        }
+
+        /* Main trigger button - made more compact */
+        .date-trigger-button {
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 6px 10px;  /* Reduced padding */
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;  /* Reduced gap */
+            font-size: 12px;  /* Smaller font */
+            color: #1f2937;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            min-width: 160px;  /* Reduced min-width */
+        }
+
+        .date-trigger-button:hover {
+            border-color: #2563eb;
+            box-shadow: 0 2px 6px rgba(37,99,235,0.1);
+        }
+
+        /* Calendar icon size */
+        .date-trigger-button span:first-child {
+            font-size: 11px;  /* Smaller calendar icon */
+        }
+
+        /* Hide default streamlit elements */
+        [data-testid="stExpander"] {
+            position: fixed;
+            top: 20px;
+            right: 60px;  /* Match the floating-date-selector right value */
+            z-index: 999999;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Rest of your existing CSS remains the same */
+        /* ... */
+        </style>
+    """, unsafe_allow_html=True)
