@@ -14,10 +14,6 @@ def init_session_state():
         st.session_state.date_range = "30D"
     if "show_calendar" not in st.session_state:
         st.session_state.show_calendar = False
-    if "date_input_start" not in st.session_state:
-        st.session_state.date_input_start = st.session_state.starting
-    if "date_input_end" not in st.session_state:
-        st.session_state.date_input_end = st.session_state.ending
 
 def load_date_selector_css():
     st.markdown("""
@@ -32,8 +28,6 @@ def load_date_selector_css():
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             width: auto;
-            transform: scale(1.5);
-            transform-origin: top right;
         }
 
         /* Main trigger button */
@@ -140,8 +134,6 @@ def load_date_selector_css():
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
-            transform: scale(1.5);
-            transform-origin: top right;
         }
 
         [data-testid="stExpander"] > div:first-child {
@@ -163,17 +155,17 @@ def update_date_range(days):
     st.session_state.ending = datetime.now()
     st.session_state.starting = st.session_state.ending - timedelta(days=days)
     st.session_state.date_range = f"{days}D"
-    st.session_state.date_input_start = st.session_state.starting
-    st.session_state.date_input_end = st.session_state.ending
     st.rerun()
 
-def update_custom_date_range(start_date, end_date):
-    st.session_state.starting = datetime.combine(start_date, datetime.min.time())
-    st.session_state.ending = datetime.combine(end_date, datetime.min.time())
-    days_diff = (end_date - start_date).days
-    st.session_state.date_range = f"{days_diff}D"
-    st.session_state.date_input_start = st.session_state.starting
-    st.session_state.date_input_end = st.session_state.ending
+def get_date_display():
+    return f"""
+        <div class="floating-date-selector" onclick="document.querySelector('.streamlit-expanderHeader').click()">
+            <div class="date-trigger-button">
+                <span>📅</span>
+                <span>{st.session_state.starting.strftime('%b %d')} - {st.session_state.ending.strftime('%b %d')} ({st.session_state.date_range})</span>
+            </div>
+        </div>
+    """
 
 def display_date_selector():
     load_date_selector_css()
@@ -184,15 +176,8 @@ def display_date_selector():
     
     # Create container for date selector
     with st.container():
-        # Floating trigger button
-        st.markdown(f"""
-            <div class="floating-date-selector" onclick="document.querySelector('.streamlit-expanderHeader').click()">
-                <div class="date-trigger-button">
-                    <span>📅</span>
-                    <span>{st.session_state.starting.strftime('%b %d')} - {st.session_state.ending.strftime('%b %d')} ({st.session_state.date_range})</span>
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
+        # Floating trigger button with dynamic content
+        st.markdown(get_date_display(), unsafe_allow_html=True)
         
         # Calendar dropdown
         with st.expander("", expanded=False):
@@ -214,9 +199,9 @@ def display_date_selector():
             st.markdown('<div class="date-input-label">Start Date</div>', unsafe_allow_html=True)
             start_date = st.date_input(
                 "",
-                value=st.session_state.date_input_start,
+                value=st.session_state.starting,
                 min_value=min_date,
-                max_value=st.session_state.date_input_end,
+                max_value=st.session_state.ending,
                 key="start_date"
             )
             st.markdown('</div>', unsafe_allow_html=True)
@@ -226,7 +211,7 @@ def display_date_selector():
             st.markdown('<div class="date-input-label">End Date</div>', unsafe_allow_html=True)
             end_date = st.date_input(
                 "",
-                value=st.session_state.date_input_end,
+                value=st.session_state.ending,
                 min_value=start_date,
                 max_value=max_date,
                 key="end_date"
@@ -234,8 +219,18 @@ def display_date_selector():
             st.markdown('</div>', unsafe_allow_html=True)
             
             # Update session state when dates change
-            if start_date and end_date and (start_date != st.session_state.starting.date() or end_date != st.session_state.ending.date()):
-                update_custom_date_range(start_date, end_date)
+            if start_date and end_date:
+                new_start = datetime.combine(start_date, datetime.min.time())
+                new_end = datetime.combine(end_date, datetime.min.time())
+                
+                # Only update if dates have changed
+                if new_start != st.session_state.starting or new_end != st.session_state.ending:
+                    st.session_state.starting = new_start
+                    st.session_state.ending = new_end
+                    days_diff = (end_date - start_date).days
+                    st.session_state.date_range = f"{days_diff}D"
+                    # Force refresh to update the display
+                    st.rerun()
 
 def main():
     st.set_page_config(
@@ -246,15 +241,6 @@ def main():
     
     init_session_state()
     display_date_selector()
-
-    # Access the selected date range via these variables
-    start_date = st.session_state.date_input_start
-    end_date = st.session_state.date_input_end
-    
-    # Display selected date range (for testing)
-    st.write("Selected Date Range:")
-    st.write(f"Start Date: {start_date.strftime('%Y-%m-%d')}")
-    st.write(f"End Date: {end_date.strftime('%Y-%m-%d')}")
 
     # Add some content to test scrolling
     st.title("Test Content")
